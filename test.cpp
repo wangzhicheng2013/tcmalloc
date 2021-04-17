@@ -1,50 +1,49 @@
-#include "file_utility.hpp"
-static const int SIZE = 4;
-static const char *file_path[SIZE] = { "./test0.bin",       // 1545KB
-                                       "./test1.bin",       // 976Bytes
-                                       "./test2.bin",       // 120KB
-                                       "./test3.bin" };     // 496Bytes
-int main() {
-    int test_loop = 10;
-    // no tcmalloc:3.2s tcmalloc:2.531s
-    /*for (int i = 0;i < test_loop;i++) {
-        std::string str;
-        if (G_FILE_UTILITY.get_file_content(file_path[0], str)) {
-            char *p = new char[str.size()];
-            memcpy(p, str.c_str(), str.size());
-            delete []p;
-        }
-    }*/
-    test_loop = 10000;
-    // no tcmalloc:1.83s tcmalloc:1.54s
-    /*for (int i = 0;i < test_loop;i++) {
-        std::string str;
-        if (G_FILE_UTILITY.get_file_content(file_path[1], str)) {
-            char *p = new char[str.size()];
-            memcpy(p, str.c_str(), str.size());
-            delete []p;
-        }
-    }*/
-    /*test_loop = 100;
-    // no tcmalloc:1.73s tcmalloc:1.72s
+#include <stdio.h>
+#include <string.h>
+#include <iostream>
+#include "time_elapse.hpp"
+int SIZE100 = 100;
+int SIZE500 = 500;
+int SIZE800 = 800;
+int SIZE1000 = 1000;
+int SIZE1600 = 1600;
+
+void test_tcmalloc(const std::string &str) {
+    int test_loop = 10000000;    // 循环一亿次
     for (int i = 0;i < test_loop;i++) {
-        std::string str;
-        if (G_FILE_UTILITY.get_file_content(file_path[2], str)) {
-            char *p = new char[str.size()];
-            memcpy(p, str.c_str(), str.size());
-            delete []p;
-        }
-    }*/
-    test_loop = 10000;
-    // no tcmalloc:0.83s tcmalloc:0.86s
-    for (int i = 0;i < test_loop;i++) {
-        std::string str;
-        if (G_FILE_UTILITY.get_file_content(file_path[3], str)) {
-            char *p = new char[str.size()];
-            memcpy(p, str.c_str(), str.size());
-            delete []p;
-        }
+        char *p = new char[str.size()];
+        memcpy(p, str.c_str(), str.size());
+        delete []p;
     }
+}
+int main() {
+    std::string str100('a', SIZE100);
+    std::string str500('a', SIZE500);
+    std::string str800('a', SIZE800);
+    std::string str1000('a', SIZE1000);
+    std::string str1600('a', SIZE1600);
+
+    long sum = 0;
+    time_elapse te;
+    te.start();
+    test_tcmalloc(str100);
+    std::cout << "100 byes:" << te.end() << "s" << std::endl;
+
+    te.start();
+    test_tcmalloc(str500);
+    std::cout << "500 byes:" << te.end() << "s" << std::endl;
+
+    te.start();
+    test_tcmalloc(str800);
+    std::cout << "800 byes:" << te.end() << "s" << std::endl;
+
+    te.start();
+    test_tcmalloc(str1000);
+    std::cout << "1000 byes:" << te.end() << "s" << std::endl;
+
+    te.start();
+    test_tcmalloc(str1600);
+    std::cout << "1600 byes:" << te.end() << "s" << std::endl;
 
     return 0;
 }
