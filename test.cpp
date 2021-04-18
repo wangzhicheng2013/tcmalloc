@@ -17,33 +17,53 @@ void test_tcmalloc(const std::string &str) {
     }
 }
 int main() {
-    std::string str100('a', SIZE100);
-    std::string str500('a', SIZE500);
-    std::string str800('a', SIZE800);
-    std::string str1000('a', SIZE1000);
-    std::string str1600('a', SIZE1600);
+    std::string str100(SIZE100, 'a');
+    std::string str500(SIZE500, 'a');
+    std::string str800(SIZE800, 'a');
+    std::string str1000(SIZE1000, 'a');
+    std::string str1600(SIZE1600, 'a');
 
-    long sum = 0;
+    const int loop = 6;
+    double avg = 0;
     time_elapse te;
-    te.start();
-    test_tcmalloc(str100);
-    std::cout << "100 byes:" << te.end() << "s" << std::endl;
+    for (int i = 0;i < loop;i++) {
+        te.start();
+        test_tcmalloc(str100);
+        avg += te.end();
+    }
+    std::cout << "100 byes:" << avg / loop << "s" << std::endl;
+    
+    avg = 0;
+    for (int i = 0;i < loop;i++) {
+        te.start();
+        test_tcmalloc(str500);
+        avg += te.end();
+    }
+    std::cout << "500 byes:" << avg / loop << "s" << std::endl;
 
-    te.start();
-    test_tcmalloc(str500);
-    std::cout << "500 byes:" << te.end() << "s" << std::endl;
+    avg = 0;
+    for (int i = 0;i < loop;i++) {
+        te.start();
+        test_tcmalloc(str800);
+        avg += te.end();
+    }
+    std::cout << "800 byes:" << avg / loop << "s" << std::endl;
 
-    te.start();
-    test_tcmalloc(str800);
-    std::cout << "800 byes:" << te.end() << "s" << std::endl;
+    avg = 0;
+    for (int i = 0;i < loop;i++) {
+        te.start();
+        test_tcmalloc(str1000);
+        avg += te.end();
+    }
+    std::cout << "1000 byes:" << avg / loop << "s" << std::endl;
 
-    te.start();
-    test_tcmalloc(str1000);
-    std::cout << "1000 byes:" << te.end() << "s" << std::endl;
-
-    te.start();
-    test_tcmalloc(str1600);
-    std::cout << "1600 byes:" << te.end() << "s" << std::endl;
+    avg = 0;
+    for (int i = 0;i < loop;i++) {
+        te.start();
+        test_tcmalloc(str1600);
+        avg += te.end();
+    }
+    std::cout << "1600 byes:" << avg / loop << "s" << std::endl;
 
     return 0;
 }
